@@ -5,7 +5,7 @@
 */
 
 
--- List of player debut later than 2006
+-- CTE for List of player debut later than 2006
 WITH player_list AS (
 	SELECT 
 		playerid 
@@ -18,18 +18,18 @@ WITH player_list AS (
 
 SELECT 
 	playerid 
-	,player_list.namefirst
-	,namelast
-	,batting.yearid 
-	,batting.hr
+	,player_list.namefirst AS first_name
+	,namelast AS last_name
+	,batting.hr AS home_run
 FROM batting
 	INNER JOIN player_list
 		USING(playerid)
-WHERE yearid = 2016
-	AND (playerid, hr) IN (
-	SELECT
-		playerid 
-		,MAX(hr)
-	FROM batting
-	GROUP BY playerid
-	HAVING MAX(hr)> 0 )
+WHERE 
+	(playerid, hr) IN (
+		SELECT
+			playerid 
+			,MAX(hr)
+		FROM batting
+		GROUP BY playerid
+		HAVING MAX(hr)> 0 )
+	AND yearid = 2016
