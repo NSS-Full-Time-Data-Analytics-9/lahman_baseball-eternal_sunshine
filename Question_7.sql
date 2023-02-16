@@ -70,27 +70,34 @@ ORDER BY STDDEV(w) ASC;
  *  also won the world series? What percentage of the time?  
  */
 
-WITH most_wins AS (
+WITH list AS  (
 	SELECT 
 		yearid 
-		,MAX(w) AS max_wins
+		,teamid AS winner
+		,w AS winner_wins
+		,most_wins.max_wins
+		,CASE
+			WHEN w = most_wins.max_wins THEN 'Y'
+			ELSE 'N'
+		END AS matched
 	FROM teams 
-	GROUP BY yearid)
-SELECT 
-	yearid 
-	,teamid AS winner
-	,w AS winner_wins
-	,most_wins.max_wins
-	,CASE
-		WHEN w = most_wins.max_wins THEN 'Y'
-		ELSE 'N'
-	END AS matched
-FROM teams 
-	LEFT JOIN most_wins 
-		USING (yearid)
-WHERE wswin ILIKE 'Y'
-ORDER BY yearid;
-
--- 57%
-
+		LEFT JOIN  (
+				SELECT 
+					yearid 
+					,MAX(w) AS max_wins
+				FROM teams 
+				GROUP BY yearid
+				) AS most_wins
+			USING (yearid)		
+	WHERE 
+		wswin ILIKE 'Y'
+		AND yearid BETWEEN 1970 AND 2016
+		AND yearid <> 1981
+	ORDER BY yearid
+)
+SELECT
+	matched
+	,COUNT(yearid)
+FROM list
+GROUP BY matched
 
