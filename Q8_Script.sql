@@ -17,7 +17,7 @@ FROM homegames AS hg
 	ON hg.team = teams.teamid
 WHERE year = 2016 AND games >=10
 GROUP BY teams.name, parks.park_name, hg.attendance, hg.games
-ORDER BY hg.attendance DESC
+ORDER BY avg_game_attend DESC
 LIMIT 5;
 
 
@@ -30,7 +30,7 @@ FROM homegames AS hg
 	ON hg.team = teams.teamid
 WHERE year = 2016 AND games >=10
 GROUP BY parks.park_name, hg.attendance, hg.games
-ORDER BY hg.attendance DESC
+ORDER BY avg_game_attend DESC
 LIMIT 5;
 
 
@@ -43,7 +43,7 @@ FROM homegames AS hg
 	ON hg.team = teams.teamid
 WHERE year = 2016 AND games >=10
 GROUP BY teams.name, parks.park_name, hg.attendance, hg.games
-ORDER BY hg.attendance
+ORDER BY avg_game_attend
 LIMIT 5;
 
 
@@ -56,7 +56,7 @@ FROM homegames AS hg
 	ON hg.team = teams.teamid
 WHERE year = 2016 AND games >=10
 GROUP BY parks.park_name, hg.attendance, hg.games
-ORDER BY hg.attendance
+ORDER BY avg_game_attend
 LIMIT 5;
 
 
