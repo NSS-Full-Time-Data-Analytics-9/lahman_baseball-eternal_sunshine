@@ -14,7 +14,7 @@ WITH player_list AS (
 		,debut 
 	FROM people 
 	WHERE 
-		debut::DATE > '2006-01-01')
+		debut::DATE < '2006-01-01')
 
 SELECT 
 	playerid 
