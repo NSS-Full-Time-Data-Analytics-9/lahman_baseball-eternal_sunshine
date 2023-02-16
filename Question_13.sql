@@ -11,43 +11,62 @@
 
 SELECT
 	throws
-	,COUNT(*)
-FROM people
+	,COUNT(DISTINCT(playerid)) AS count
+FROM pitching
+	LEFT JOIN people
+		USING(playerid)
 GROUP BY throws
 
 -- % of left-handed player from people table
 -- NULL value is not included
--- [ S: 1 /  R: 14480 / L: 3654 ]
--- 20.14%
+-- [ S: 1 /  R: 6605 / L: 2477 ]
+-- 27.27%
 
 
 /* Part 2.
  * Cy Young Award
  */
 
+WITH pitcher_list AS (
+	SELECT
+		DISTINCT(playerid) AS playerid
+		,throws
+	FROM pitching
+		LEFT JOIN people
+			USING(playerid)
+	)
 SELECT
 	throws
 	,COUNT(playerid) AS count_winner
 FROM awardsplayers
-	INNER JOIN people
+	INNER JOIN pitcher_list
 		USING(playerid)
 WHERE awardid ILIKE 'Cy Young Award'
 GROUP BY throws
 
--- # of Cy Young Award received by left-handed player 
+-- # of Cy Young Award received by left-handed pitcher 
 -- [ L: 37 / R: 75 ]
 -- 33.03%
 
+
+WITH pitcher_list AS (
+	SELECT
+		DISTINCT(playerid) AS playerid
+		,throws
+	FROM pitching
+		LEFT JOIN people
+			USING(playerid)
+	)
 SELECT
 	throws
 	,COUNT(DISTINCT(playerid)) AS count_winner
 FROM awardsplayers
-	INNER JOIN people
+	INNER JOIN pitcher_list
 		USING(playerid)
 WHERE awardid ILIKE 'Cy Young Award'
 GROUP BY throws
 
--- # of left-handed player won Cy Young Award
+-- # of left-handed pitcher won Cy Young Award
 -- [ L: 24 / R: 53]
 -- 31.16%
 
@@ -56,32 +75,48 @@ GROUP BY throws
  * Hall of Fame
  */
 
+WITH pitcher_list AS (
+	SELECT
+		DISTINCT(playerid) AS playerid
+		,throws
+	FROM pitching
+		LEFT JOIN people
+			USING(playerid)
+	)
 SELECT
 	throws
 	,COUNT(playerid)
 FROM halloffame
-	INNER JOIN people
+	INNER JOIN pitcher_list
 		USING (playerid)
 WHERE throws IS NOT NULL
 GROUP BY throws
 
--- % of Hall of Fame award received by left-handed player 
+-- % of Hall of Fame award received by left-handed pitcher 
 -- NULL value is not included
--- [ L: 786 / R: 3335 ] Total: 4121
--- 19.07%
+-- [ L: 439 / R: 1153 ] Total: 1592
+-- 27.57%
 
+WITH pitcher_list AS (
+	SELECT
+		DISTINCT(playerid) AS playerid
+		,throws
+	FROM pitching
+		LEFT JOIN people
+			USING(playerid)
+	)
 SELECT
 	throws
 	,COUNT(DISTINCT(playerid))
 FROM halloffame
-	INNER JOIN people
+	INNER JOIN pitcher_list
 		USING (playerid)
 GROUP BY throws
 
--- # of left-handed player won Hall of Fame
+-- # of left-handed pitcher won Hall of Fame
 -- NULL value is not included
--- [ L: 786 / R: 3335 ] Total: 4121
--- 19.07%
+-- [ L: 141 / R: 347 ] Total: 488
+-- 28.89%
 
 /*
  * As shown in parts 2 and 3, left-handed players are more likely to receive awards, suggesting that left-handed pitchers 
